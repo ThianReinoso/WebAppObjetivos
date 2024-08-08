@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Objetivos</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    body {
+      padding: 2rem;
+      background-color: #f8f9fa;
+    }
+    .registro-container {
+      max-width: 1000px;
+      margin: auto;
+      background-color: #ffffff;
+      border-radius: 0.5rem;
+      box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+      padding: 2rem;
+    }
+    .registro-container h2 {
+      margin-bottom: 1.5rem;
+    }
+    .modal-body {
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="registro-container">
+    <h2 class="text-center">Registro de Objetivos</h2>
+    <button class="btn btn-success mb-3" data-toggle="modal" data-target="#registroModal">Registrar Nuevo Objetivo</button>
+    <table id="objetivosTable" class="table table-striped table-bordered" style="width:100%">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Tipo</th>
+          <th>Actividades</th>
+          <th>Tareas Semanales</th>
+          <th>Fecha Propuesta</th>
+          <th>Fecha Límite</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="modal fade" id="registroModal" tabindex="-1" role="dialog" aria-labelledby="registroModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="registroModalLabel">Registrar Objetivo</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="registroForm">
+            <input type="hidden" id="objetivoId" name="objetivoId">
+            <div class="form-group">
+              <label for="usuario">Usuario</label>
+              <input type="text" class="form-control" id="usuario" name="usuario" readonly>
+            </div>
+            <div class="form-group">
+              <label for="tipo">Tipo de Objetivo</label>
+              <select class="form-control" id="tipo" name="tipo" required>
+                <option value="Estrategico">Estrategico</option>
+                <option value="Operativo">Operativo</option>
+                <!-- Agregar más opciones según sea necesario -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="actividades">Actividades</label>
+              <textarea class="form-control" id="actividades" name="actividades" required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="fechaPropuesta">Fecha Propuesta</label>
+              <input type="date" class="form-control" id="fechaPropuesta" name="fechaPropuesta" readonly>
+            </div>
+            <div class="form-group">
+              <label for="fechaLimite">Fecha Límite</label>
+              <input type="date" class="form-control" id="fechaLimite" name="fechaLimite" readonly>
+            </div>
+            <div class="form-group">
+              <label for="tareas">Tareas Semanales</label>
+              <div id="tareasContainer">
+                <input type="text" class="form-control mb-2" name="tarea1" placeholder="Tarea 1">
+                <input type="text" class="form-control mb-2" name="tarea2" placeholder="Tarea 2">
+                <input type="text" class="form-control mb-2" name="tarea3" placeholder="Tarea 3">
+                <input type="text" class="form-control mb-2" name="tarea4" placeholder="Tarea 4">
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="submitRegistroForm()">Registrar Objetivo</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      google.script.run.withSuccessHandler(function(usuario) {
+        document.getElementById('usuario').value = usuario;
+      }).obtenerUsuarioActual();
+
+      google.script.run.withSuccessHandler(function(fechas) {
+        document.getElementById('fechaPropuesta').value = fechas.fechaActual;
+        document.getElementById('fechaLimite').value = fechas.ultimoDiaMes;
+      }).obtenerFechas();
+
+      google.script.run.withSuccessHandler(function(objetivos) {
+        cargarTabla(objetivos);
+      }).obtenerObjetivosUsuario();
+    });
+
+    $('#registroModal').on('shown.bs.modal', function () {
+      google.script.run.withSuccessHandler(function(usuario) {
+        document.getElementById('usuario').value = usuario;
+      }).obtenerUsuarioActual();
+
+      google.script.run.withSuccessHandler(function(fechas) {
+        document.getElementById('fechaPropuesta').value = fechas.fechaActual;
+        document.getElementById('fechaLimite').value = fechas.ultimoDiaMes;
+      }).obtenerFechas();
+    });
+
+    function submitRegistroForm() {
+      const id = document.getElementById('objetivoId').value;
+      const tipo = document.getElementById('tipo').value;
+      const actividades = document.getElementById('actividades').value;
+      const fechaLimite = document.getElementById('fechaLimite').value;
+      const tareas = [
+        document.querySelector('[name="tarea1"]').value,
+        document.querySelector('[name="tarea2"]').value,
+        document.querySelector('[name="tarea3"]').value,
+        document.querySelector('[name="tarea4"]').value
+      ];
+
+      if (id) {
+        google.script.run.withSuccessHandler(() => {
+          alert('Objetivo actualizado con éxito.');
+          document.getElementById('registroForm').reset();
+          $('#registroModal').modal('hide');
+          google.script.run.withSuccessHandler(function(objetivos) {
+            cargarTabla(objetivos);
+          }).obtenerObjetivosUsuario();
+        }).editarObjetivo(id, tipo, actividades, fechaLimite, tareas);
+      } else {
+        google.script.run.withSuccessHandler(() => {
+          alert('Objetivo registrado con éxito.');
+          document.getElementById('registroForm').reset();
+          $('#registroModal').modal('hide');
+          google.script.run.withSuccessHandler(function(objetivos) {
+            cargarTabla(objetivos);
+          }).obtenerObjetivosUsuario();
+        }).registrarObjetivo(tipo, actividades, fechaLimite, tareas);
+      }
+    }
+
+    function cargarTabla(objetivos) {
+      const table = $('#objetivosTable').DataTable();
+      table.clear();
+      objetivos.forEach(objetivo => {
+        const tareasHtml = objetivo[3].map(tarea => `<li>${tarea.semana}: ${tarea.tarea}</li>`).join('');
+        table.row.add([
+          objetivo[0],
+          objetivo[1],
+          objetivo[2],
+          `<ul>${tareasHtml}</ul>`,
+          objetivo[4],
+          objetivo[5],
+          '<button class="btn btn-primary" onclick="aprobarObjetivo(' + objetivo[6] + ')"><i class="fas fa-check"></i></button>' +
+          '<button class="btn btn-warning" onclick="editarObjetivo(' + objetivo[6] + ')"><i class="fas fa-pencil-alt"></i></button>' +
+          '<button class="btn btn-danger" onclick="eliminarObjetivo(' + objetivo[6] + ')"><i class="fas fa-trash"></i></button>'
+        ]).draw(false);
+      });
+    }
+
+    function aprobarObjetivo(id) {
+      google.script.run.withSuccessHandler(() => {
+        alert('Objetivo aprobado con éxito.');
+        google.script.run.withSuccessHandler(function(objetivos) {
+          cargarTabla(objetivos);
+        }).obtenerObjetivosUsuario();
+      }).aprobarObjetivo(id);
+    }
+
+    function editarObjetivo(id) {
+      google.script.run.withSuccessHandler(function(objetivo) {
+        if (objetivo) {
+          document.getElementById('objetivoId').value = objetivo.id;
+          document.getElementById('tipo').value = objetivo.tipo;
+          document.getElementById('actividades').value = objetivo.actividades;
+          document.getElementById('fechaPropuesta').value = objetivo.fechaPropuesta;
+          document.getElementById('fechaLimite').value = objetivo.fechaLimite;
+          objetivo.tareas.forEach((tarea, index) => {
+            document.querySelector(`[name="tarea${index + 1}"]`).value = tarea.tarea;
+          });
+          $('#registroModal').modal('show');
+        }
+      }).obtenerObjetivoPorId(id);
+    }
+
+    function eliminarObjetivo(id) {
+      google.script.run.withSuccessHandler(() => {
+        alert('Objetivo eliminado con éxito.');
+        google.script.run.withSuccessHandler(function(objetivos) {
+          cargarTabla(objetivos);
+        }).obtenerObjetivosUsuario();
+      }).eliminarObjetivo(id);
+    }
+  </script>
+</body>
+</html>
