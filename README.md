@@ -32,41 +32,56 @@ Sigue estos pasos para instalar y configurar el proyecto en tu Google Drive:
 1. **Clona el repositorio**:
    ```bash
    git clone https://github.com/tu-usuario/registro-de-objetivos.git
-Accede a Google Apps Script:
 
-Ve a Google Apps Script.
-Crea un nuevo proyecto y copia el contenido de los archivos .gs y .html en los respectivos archivos del proyecto en Google Apps Script.
-Configura Google Sheets:
+## Instalación
 
-Crea una nueva hoja de cálculo en Google Sheets.
-Añade las hojas Usuarios, Objetivos y Tareas con las estructuras especificadas en la documentación del código.
-Autoriza el script:
+### Accede a Google Apps Script:
 
-Ejecuta cualquier función en el editor de Google Apps Script para que te pida autorización. Acepta los permisos necesarios.
-Implementa la aplicación web:
+1. Ve a [Google Apps Script](https://script.google.com/).
+2. Crea un nuevo proyecto y copia el contenido de los archivos `.gs` y `.html` en los respectivos archivos del proyecto en Google Apps Script.
 
-Ve a Deploy > Test deployments y configura la URL de despliegue para que puedas acceder a la aplicación.
-Uso
-Iniciar Sesión
-Abre la URL de la aplicación web implementada.
-Introduce tus credenciales para iniciar sesión.
-Registrar Objetivos
-Haz clic en el botón "Registrar Nuevo Objetivo".
-Llena el formulario con los detalles del objetivo y las tareas semanales.
-Adjunta evidencias si es necesario y haz clic en "Registrar Objetivo".
-Visualizar y Gestionar Objetivos
-La tabla mostrará los objetivos registrados.
-Usa los botones de acción para editar, eliminar o aprobar objetivos.
-Contribución
+### Configura Google Sheets:
+
+1. Crea una nueva hoja de cálculo en Google Sheets.
+2. Añade las hojas `Usuarios`, `Objetivos` y `Tareas` con las estructuras especificadas en la documentación del código.
+
+### Autoriza el script:
+
+1. Ejecuta cualquier función en el editor de Google Apps Script para que te pida autorización.
+2. Acepta los permisos necesarios.
+
+### Implementa la aplicación web:
+
+1. Ve a `Deploy > Test deployments` y configura la URL de despliegue para que puedas acceder a la aplicación.
+
+## Uso
+
+### Iniciar Sesión
+
+1. Abre la URL de la aplicación web implementada.
+2. Introduce tus credenciales para iniciar sesión.
+
+### Registrar Objetivos
+
+1. Haz clic en el botón "Registrar Nuevo Objetivo".
+2. Llena el formulario con los detalles del objetivo y las tareas semanales.
+3. Adjunta evidencias si es necesario y haz clic en "Registrar Objetivo".
+
+### Visualizar y Gestionar Objetivos
+
+1. La tabla mostrará los objetivos registrados.
+2. Usa los botones de acción para editar, eliminar o aprobar objetivos.
+
+## Contribución
+
 Si deseas contribuir a este proyecto, sigue estos pasos:
 
-Haz un fork del repositorio.
-Crea una nueva rama (git checkout -b feature-nueva-funcionalidad).
-Realiza tus cambios y haz commit (git commit -am 'Añadir nueva funcionalidad').
-Haz push a la rama (git push origin feature-nueva-funcionalidad).
-Abre un Pull Request.
-Licencia
-Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo LICENSE para obtener más información.
+1. Haz un fork del repositorio.
+2. Crea una nueva rama (`git checkout -b feature-nueva-funcionalidad`).
+3. Realiza tus cambios y haz commit (`git commit -am 'Añadir nueva funcionalidad'`).
+4. Haz push a la rama (`git push origin feature-nueva-funcionalidad`).
+5. Abre un Pull Request.
 
-¡Gracias por usar el Registro de Objetivos con Tareas Semanales! Si tienes alguna pregunta o sugerencia, no dudes en abrir un issue o contactar al equipo de desarrollo.
+## Licencia
 
+Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para obtener más información.
